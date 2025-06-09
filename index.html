@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Cake Walk Baking Co. - Custom cakes, wedding cakes, cupcakes, and pastries. Expert bakers crafting delicious treats for all occasions.">
+    <meta name="keywords" content="bakery, cakes, wedding cakes, cupcakes, pastries, custom cakes, birthday cakes">
+    <title>Cake Walk Baking Co. - Premium Custom Cakes & Pastries</title>
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="css/variables.css" as="style">
+    <link rel="preload" href="css/base.css" as="style">
+    <link rel="preload" href="img/logo.png" as="image">
+    
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    
+    <!-- Device-specific CSS will be loaded by the app -->
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&family=Anaheim&display=swap">
+    
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Bakery",
+        "name": "Cake Walk Baking Co.",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "123 Baker Street",
+            "addressLocality": "Sweetville",
+            "addressRegion": "CA",
+            "postalCode": "90210"
+        },
+        "telephone": "(555) 123-4567",
+        "openingHours": "Mo-Fr 08:00-18:00, Sa 09:00-17:00",
+        "servesCuisine": "Bakery",
+        "description": "Custom cakes, wedding cakes, cupcakes, and pastries crafted with love and attention to detail."
+    }
+    </script>
+</head>
+<body>
+    <!-- Loading indicator -->
+    <div id="loading-screen" class="loading-screen" aria-hidden="true">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Loading Cake Walk Bakery...</p>
+        </div>
+    </div>
+
+    <!-- Parallax background -->
+    <div class="parallax-bg" aria-hidden="true"></div>
+
+    <!-- Mobile Header -->
+    <header class="mobile-header" id="mobileHeader">
+        <div class="header-container">
+            <button class="menu-toggle" id="menuToggle" aria-label="Open navigation menu" aria-expanded="false">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+            <img src="img/logo.png" alt="Cake Walk Baking Co. Logo" class="logo" width="80" height="44">
+            <div class="header-action">
+                <a href="#contact" class="action-button" aria-label="Contact us">
+                    <i class="fas fa-phone" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Desktop Sidebar Navigation -->
+    <nav class="desktop-nav" id="desktopNav" aria-label="Main navigation">
+        <div class="nav-logo">
+            <img src="img/logo.png" alt="Cake Walk Baking Co. Logo" width="80" height="44">
+            <div class="logo-text">Cake Walk Bakery</div>
+        </div>
+        
+        <div class="accordion-menu" role="tablist">
+            <div class="menu-section" role="tab">
+                <input type="radio" name="accordion" id="services-section" checked aria-controls="services-content">
+                <label for="services-section" class="section-header">
+                    <i class="fas fa-concierge-bell" aria-hidden="true"></i>
+                    <span>Our Services</span>
+                    <i class="fas fa-chevron-down section-arrow" aria-hidden="true"></i>
+                </label>
+                <div class="section-content" id="services-content" role="tabpanel">
+                    <ul class="nav-links">
+                        <li>
+                            <button class="nav-link" data-target="#services" data-content="services">
+                                <i class="fas fa-heart" aria-hidden="true"></i>
+                                <span>Our Mission</span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="menu-section" role="tab">
+                <input type="radio" name="accordion" id="products-section" aria-controls="products-content">
+                <label for="products-section" class="section-header">
+                    <i class="fas fa-shopping-basket" aria-hidden="true"></i>
+                    <span>Our Products</span>
+                    <i class="fas fa-chevron-down section-arrow" aria-hidden="true"></i>
+                </label>
+                <div class="section-content" id="products-content" role="tabpanel">
+                    <ul class="nav-links">
+                        <li>
+                            <button class="nav-link" data-target="#products" data-content="gallery">
+                                <i class="fas fa-images" aria-hidden="true"></i>
+                                <span>Gallery</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="nav-link" data-target="#products" data-content="wedding-cakes">
+                                <i class="fas fa-birthday-cake" aria-hidden="true"></i>
+                                <span>Wedding Cakes</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="nav-link" data-target="#products" data-content="cupcakes">
+                                <i class="fas fa-cupcake" aria-hidden="true"></i>
+                                <span>Cupcakes</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="nav-link" data-target="#products" data-content="birthday-cakes">
+                                <i class="fas fa-birthday-cake" aria-hidden="true"></i>
+                                <span>Birthday Cakes</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="nav-link" data-target="#products" data-content="pastries">
+                                <i class="fas fa-bread-slice" aria-hidden="true"></i>
+                                <span>Pastries</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="nav-link" data-target="#products" data-content="cookies">
+                                <i class="fas fa-cookie" aria-hidden="true"></i>
+                                <span>Cookies</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="nav-link" data-target="#products" data-content="pies">
+                                <i class="fas fa-cheese" aria-hidden="true"></i>
+                                <span>Pies</span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="menu-section" role="tab">
+                <input type="radio" name="accordion" id="contact-section" aria-controls="contact-content">
+                <label for="contact-section" class="section-header">
+                    <i class="fas fa-envelope" aria-hidden="true"></i>
+                    <span>Contact Us</span>
+                    <i class="fas fa-chevron-down section-arrow" aria-hidden="true"></i>
+                </label>
+                <div class="section-content" id="contact-content" role="tabpanel">
+                    <ul class="nav-links">
+                        <li>
+                            <button class="nav-link" data-target="#contact" data-content="location">
+                                <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                                <span>Location</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="nav-link" data-target="#contact" data-content="phone">
+                                <i class="fas fa-phone" aria-hidden="true"></i>
+                                <span>Phone</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="nav-link" data-target="#contact" data-content="contact-form">
+                                <i class="fas fa-envelope" aria-hidden="true"></i>
+                                <span>Contact Form</span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="menu-section" role="tab">
+                <input type="radio" name="accordion" id="about-section" aria-controls="about-content">
+                <label for="about-section" class="section-header">
+                    <i class="fas fa-info-circle" aria-hidden="true"></i>
+                    <span>About Us</span>
+                    <i class="fas fa-chevron-down section-arrow" aria-hidden="true"></i>
+                </label>
+                <div class="section-content" id="about-content" role="tabpanel">
+                    <ul class="nav-links">
+                        <li>
+                            <button class="nav-link" data-target="#about" data-content="story">
+                                <i class="fas fa-history" aria-hidden="true"></i>
+                                <span>Our Story</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="nav-link" data-target="#about" data-content="team">
+                                <i class="fas fa-users" aria-hidden="true"></i>
+                                <span>Our Team</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="nav-link" data-target="#about" data-content="policies">
+                                <i class="fas fa-file-alt" aria-hidden="true"></i>
+                                <span>Policies</span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="nav-footer">
+            <div class="social-links">
+                <a href="#" aria-label="Follow us on Facebook" class="social-link">
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+                <a href="#" aria-label="Follow us on Instagram" class="social-link">
+                    <i class="fab fa-instagram" aria-hidden="true"></i>
+                </a>
+                <a href="#" aria-label="Follow us on Twitter" class="social-link">
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </div>
+            <p class="copyright">&copy; 2025 Cake Walk Baking Co.</p>
+        </div>
+    </nav>
+    
+    <!-- Mobile Side Navigation -->
+    <nav class="mobile-nav" id="mobileNav" aria-hidden="true" aria-label="Mobile navigation">
+        <div class="mobile-nav-header">
+            <img src="img/logo.png" alt="Cake Walk Baking Co. Logo" class="nav-logo" width="60" height="33">
+            <button class="nav-close" id="navClose" aria-label="Close navigation menu">
+                <i class="fas fa-times" aria-hidden="true"></i>
+            </button>
+        </div>
+        
+        <ul class="mobile-nav-links" role="list">
+            <li role="listitem">
+                <a href="#services" class="mobile-nav-link">
+                    <i class="fas fa-concierge-bell" aria-hidden="true"></i>
+                    <span>Our Services</span>
+                </a>
+            </li>
+            <li role="listitem">
+                <a href="#products" class="mobile-nav-link">
+                    <i class="fas fa-birthday-cake" aria-hidden="true"></i>
+                    <span>Our Products</span>
+                </a>
+            </li>
+            <li role="listitem">
+                <a href="#contact" class="mobile-nav-link">
+                    <i class="fas fa-envelope" aria-hidden="true"></i>
+                    <span>Contact Us</span>
+                </a>
+            </li>
+            <li role="listitem">
+                <a href="#about" class="mobile-nav-link">
+                    <i class="fas fa-info-circle" aria-hidden="true"></i>
+                    <span>About Us</span>
+                </a>
+            </li>
+        </ul>
+        
+        <div class="mobile-nav-footer">
+            <a href="tel:5551234567" class="nav-contact-btn">
+                <i class="fas fa-phone" aria-hidden="true"></i>
+                <span>(555) 123-4567</span>
+            </a>
+        </div>
+    </nav>
+    
+    <!-- Navigation Overlay -->
+    <div class="nav-overlay" id="navOverlay" aria-hidden="true"></div>
+
+    <!-- Desktop Content Panel -->
+    <main class="content-panel" id="contentPanel" role="main">
+        <header class="panel-header">
+            <h1 class="panel-title" id="panelTitle">Welcome to Cake Walk Baking Co.</h1>
+            <button class="panel-close" id="panelClose" aria-label="Close panel">
+                <i class="fas fa-times" aria-hidden="true"></i>
+            </button>
+        </header>
+        <div class="panel-content" id="panelContent">
+            <!-- Dynamic content will be loaded here -->
+        </div>
+    </main>
+
+    <!-- Mobile Main Content -->
+    <main class="mobile-main" id="mobileMain" role="main">
+        <section id="services" class="section" tabindex="0">
+            <div class="section-content">
+                <h2 class="section-title">Our Services</h2>
+                <div class="services-container">
+                    <div class="services-text">
+                        <h3>Welcome to Cake Walk Baking Co.</h3>
+                        <p>At Cake Walk Baking Co., we believe that every occasion deserves the perfect sweet treat. Our passionate team of expert bakers crafts each item with love and attention to detail, using only the finest ingredients to create memorable experiences.</p>
+                        <p>We specialize in custom cakes, wedding cakes, cupcakes, pastries, and more. Whether you're celebrating a birthday, wedding, or just craving something sweet, we're here to make your vision come to life with delicious flavors and stunning designs.</p>
+                        <p>Our commitment to quality and creativity has made us a trusted name in the local community, and we take pride in being part of your special moments.</p>
+                    </div>
+                    <div class="services-image">
+                        <img src="img/bakery.jpg" alt="Our beautiful bakery interior" loading="lazy">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="products" class="section" tabindex="0">
+            <div class="section-content">
+                <h2 class="section-title">Our Products</h2>
+                <h3>Click on a product for more details</h3>
+                
+                <div class="carousel-container">
+                    <div id="productCarousel" class="product-carousel">
+                        <figure class="product-item" data-product="Wedding Cakes" data-category="cakes">
+                            <div class="product-card">
+                                <img src="img/img1.png" alt="Elegant wedding cake with multiple tiers" loading="lazy">
+                                <div class="product-overlay">
+                                    <span class="view-details">View Details</span>
+                                </div>
+                            </div>
+                            <div class="product-details">
+                                <h4>Wedding Cakes</h4>
+                                <p>Custom-designed wedding cakes for your special day</p>
+                            </div>
+                        </figure>
+                        
+                        <figure class="product-item" data-product="Cupcakes" data-category="cupcakes">
+                            <div class="product-card">
+                                <img src="img/img2.png" alt="Assorted colorful cupcakes with decorative frosting" loading="lazy">
+                                <div class="product-overlay">
+                                    <span class="view-details">View Details</span>
+                                </div>
+                            </div>
+                            <div class="product-details">
+                                <h4>Cupcakes</h4>
+                                <p>Variety of flavors and decorative designs</p>
+                            </div>
+                        </figure>
+                        
+                        <figure class="product-item" data-product="Birthday Cakes" data-category="cakes">
+                            <div class="product-card">
+                                <img src="img/img3.png" alt="Festive birthday cake with colorful decorations" loading="lazy">
+                                <div class="product-overlay">
+                                    <span class="view-details">View Details</span>
+                                </div>
+                            </div>
+                            <div class="product-details">
+                                <h4>Birthday Cakes</h4>
+                                <p>Personalized cakes for all ages</p>
+                            </div>
+                        </figure>
+                        
+                        <figure class="product-item" data-product="Pastries" data-category="pastries">
+                            <div class="product-card">
+                                <img src="img/img4.png" alt="Fresh assorted pastries and croissants" loading="lazy">
+                                <div class="product-overlay">
+                                    <span class="view-details">View Details</span>
+                                </div>
+                            </div>
+                            <div class="product-details">
+                                <h4>Pastries</h4>
+                                <p>Fresh-baked daily pastries and treats</p>
+                            </div>
+                        </figure>
+                        
+                        <figure class="product-item" data-product="Cookies" data-category="pastries">
+                            <div class="product-card">
+                                <img src="img/img5.png" alt="Decorated sugar cookies and classic favorites" loading="lazy">
+                                <div class="product-overlay">
+                                    <span class="view-details">View Details</span>
+                                </div>
+                            </div>
+                            <div class="product-details">
+                                <h4>Cookies</h4>
+                                <p>Classic and custom-designed cookies</p>
+                            </div>
+                        </figure>
+                        
+                        <figure class="product-item" data-product="Pies" data-category="pies">
+                            <div class="product-card">
+                                <img src="img/img6.png" alt="Homemade fruit and cream pies" loading="lazy">
+                                <div class="product-overlay">
+                                    <span class="view-details">View Details</span>
+                                </div>
+                            </div>
+                            <div class="product-details">
+                                <h4>Pies</h4>
+                                <p>Delicious homemade pies for any occasion</p>
+                            </div>
+                        </figure>
+                    </div>
+                    
+                    <div class="carousel-instructions">
+                        <div class="touch-hint">
+                            <i class="fas fa-hand-pointer" aria-hidden="true"></i>
+                            <span>Tap to pause • Swipe to rotate</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="section" tabindex="0">
+            <div class="section-content">
+                <h2 class="section-title">Contact Us</h2>
+                <div class="contact-container">
+                    <div class="contact-info">
+                        <h3>Visit Us</h3>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                            <div>
+                                <p>123 Baker Street</p>
+                                <p>Sweetville, CA 90210</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone" aria-hidden="true"></i>
+                            <a href="tel:5551234567">(555) 123-4567</a>
+                        </div>
+                        
+                        <h3>Hours of Operation</h3>
+                        <div class="hours-list">
+                            <div class="hours-item">
+                                <span>Monday - Friday</span>
+                                <span>8:00 AM - 6:00 PM</span>
+                            </div>
+                            <div class="hours-item">
+                                <span>Saturday</span>
+                                <span>9:00 AM - 5:00 PM</span>
+                            </div>
+                            <div class="hours-item">
+                                <span>Sunday</span>
+                                <span>Closed</span>
+                            </div>
+                        </div>
+                        
+                        <div class="map-container">
+                            <iframe
+                                width="100%"
+                                height="200"
+                                frameborder="0"
+                                style="border:0"
+                                src="https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=123+Baker+Street,Sweetville+CA"
+                                allowfullscreen
+                                loading="lazy"
+                                title="Cake Walk Baking Co. Location">
+                            </iframe>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-form">
+                        <h3>Send Us a Message</h3>
+                        <form id="contactForm" novalidate>
+                            <div class="form-group">
+                                <label for="name">Name *</label>
+                                <input type="text" id="name" name="name" required aria-describedby="name-error">
+                                <div class="error-message" id="name-error" role="alert"></div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="email">Email *</label>
+                                <input type="email" id="email" name="email" required aria-describedby="email-error">
+                                <div class="error-message" id="email-error" role="alert"></div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="phone">Phone</label>
+                                <input type="tel" id="phone" name="phone" aria-describedby="phone-error">
+                                <div class="error-message" id="phone-error" role="alert"></div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="message">Message *</label>
+                                <textarea id="message" name="message" rows="5" required aria-describedby="message-error"></textarea>
+                                <div class="error-message" id="message-error" role="alert"></div>
+                            </div>
+                            
+                            <button type="submit" class="submit-btn">
+                                <span>Send Message</span>
+                                <i class="fas fa-paper-plane" aria-hidden="true"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="section" tabindex="0">
+            <div class="section-content">
+                <h2 class="section-title">About Us</h2>
+                <div class="about-container">
+                    <div class="about-text">
+                        <h3>Our Story</h3>
+                        <p>Cake Walk Baking Co. was founded in 2015 with the simple goal of bringing joy through delicious baked goods. What started as a small passion project has grown into a beloved local institution, serving our community with exceptional treats and unforgettable experiences.</p>
+                        <p>Our team of talented bakers combines traditional techniques with innovative flavors to create memorable treats for all occasions. From weddings to birthdays, our custom creations have become the centerpiece of countless celebrations throughout Sweetville and beyond.</p>
+                    </div>
+                    
+                    <div class="team-section">
+                        <h3>Our Team</h3>
+                        <p>Led by our head pastry chef Elizabeth Chen, our team brings decades of combined experience to every creation. We're passionate about quality ingredients, exceptional taste, and making every customer's vision come to life through our artisanal approach to baking.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <footer class="mobile-footer">
+                <div class="footer-content">
+                    <img src="img/logo.png" alt="Cake Walk Baking Co. Logo" class="footer-logo" width="60" height="33">
+                    <div class="footer-actions">
+                        <a href="tel:5551234567" class="footer-btn">
+                            <i class="fas fa-phone" aria-hidden="true"></i>
+                            <span>Call Us</span>
+                        </a>
+                        <a href="#contact" class="footer-btn">
+                            <i class="fas fa-envelope" aria-hidden="true"></i>
+                            <span>Message</span>
+                        </a>
+                    </div>
+                    <div class="social-links">
+                        <a href="#" aria-label="Follow us on Facebook" class="social-link">
+                            <i class="fab fa-facebook" aria-hidden="true"></i>
+                        </a>
+                        <a href="#" aria-label="Follow us on Instagram" class="social-link">
+                            <i class="fab fa-instagram" aria-hidden="true"></i>
+                        </a>
+                        <a href="#" aria-label="Follow us on Twitter" class="social-link">
+                            <i class="fab fa-twitter" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                    <p class="copyright">&copy; 2025 Cake Walk Baking Co. All rights reserved.</p>
+                </div>
+            </footer>
+        </section>
+    </main>
+    
+    <!-- Product Modal -->
+    <div id="productModal" class="modal" role="dialog" aria-labelledby="modal-title" aria-hidden="true">
+        <div class="modal-backdrop"></div>
+        <div class="modal-container">
+            <button class="modal-close" aria-label="Close modal">
+                <i class="fas fa-times" aria-hidden="true"></i>
+            </button>
+            <img class="modal-image" id="modalImage" alt="">
+            <div class="modal-content" id="modalContent">
+                <h3 id="modal-title" class="modal-title"></h3>
+                <p class="modal-description"></p>
+                <button class="modal-cta" id="modalCta">Order Now</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top" aria-hidden="true">
+        <i class="fas fa-chevron-up" aria-hidden="true"></i>
+    </button>
+
+    <!-- Scripts -->
+    <script type="module" src="js/app.js"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch(registrationError => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
