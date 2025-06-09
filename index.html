@@ -583,5 +583,16 @@
             });
         }
     </script>
+	<script>
+  // Fallback to ensure loading screen is removed
+  window.addEventListener('load', function() {
+    setTimeout(function() {
+      const loadingScreen = document.getElementById('loading-screen');
+      if (loadingScreen) {
+        loadingScreen.style.display = 'none';
+      }
+    }, 2000); // 2 seconds timeout
+  });
+</script>
 </body>
 </html>
