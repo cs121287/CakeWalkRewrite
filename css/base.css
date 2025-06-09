@@ -233,6 +233,8 @@ th {
   }
 }
 
+/* Update these rules in your base.css file */
+
 /* ========== LOADING STATE ========== */
 .loading-screen {
   position: fixed;
@@ -252,6 +254,10 @@ th {
 .loading-screen.hidden {
   opacity: 0;
   visibility: hidden;
+}
+
+.loading-screen.force-hidden {
+  display: none !important;
 }
 
 .loading-spinner {

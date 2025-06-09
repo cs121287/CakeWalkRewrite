@@ -2,11 +2,21 @@
  * Main Application Module
  */
 import { Utils } from './core/utils.js';
-import { Navigation } from './components/Navigation.js';
-import { Carousel3D } from './components/Carousel3D.js';
-import { Modal } from './components/Modal.js';
-import { FormHandler } from './components/Form.js';
-import { ScrollManager } from './components/ScrollManager.js';
+
+// Import components conditionally to prevent blocking
+const loadComponents = async () => {
+  try {
+    const Navigation = (await import('./components/Navigation.js')).Navigation;
+    const Carousel3D = (await import('./components/Carousel3D.js')).Carousel3D;
+    const Modal = (await import('./components/Modal.js')).Modal;
+    const FormHandler = (await import('./components/Form.js')).FormHandler;
+    const ScrollManager = (await import('./components/ScrollManager.js')).ScrollManager;
+    return { Navigation, Carousel3D, Modal, FormHandler, ScrollManager };
+  } catch (error) {
+    console.error('Failed to import components:', error);
+    return {};
+  }
+};
 
 class CakeWalkApp {
   constructor() {
@@ -14,8 +24,13 @@ class CakeWalkApp {
     this.isInitialized = false;
     this.deviceType = null;
     
-    // Set a timeout to force-hide the loading screen after 5 seconds
-    this.loadingTimeout = setTimeout(() => this.hideLoadingScreen(), 5000);
+    // Ensure loading screen is removed even if JS fails
+    this.loadingTimeout = setTimeout(() => this.forceHideLoadingScreen(), 3000);
+    
+    // Show content regardless of loading state
+    this.showContentTimeout = setTimeout(() => {
+      document.body.style.visibility = 'visible';
+    }, 800);
   }
 
   async init() {
@@ -29,62 +44,98 @@ class CakeWalkApp {
         });
       }
 
-      // Detect device type
-      this.deviceType = Utils.getDeviceType();
+      // Add a safety fallback to show content
+      document.body.style.visibility = 'visible';
+
+      // Detect device type first to load critical CSS quickly
+      this.deviceType = this.detectDeviceType();
       document.documentElement.classList.add(this.deviceType);
 
-      // Load appropriate styles based on device
-      await this.loadDeviceStyles();
-
-      // Initialize components
-      this.initializeComponents();
+      // Load critical CSS synchronously first
+      await this.loadCriticalCSS();
+      
+      // Hide loading screen early once critical CSS is loaded
+      this.startHidingLoadingScreen();
+      
+      // Load remaining styles and components in parallel
+      await Promise.all([
+        this.loadRemainingStyles(),
+        this.initializeComponentsAsync()
+      ]);
+      
+      // Setup interactions that depend on components
       this.setupProductInteractions();
       
-      // Hide loading screen
-      this.hideLoadingScreen();
+      // Complete loading and hide loading screen
+      this.completeLoading();
       
       this.isInitialized = true;
       console.log('CakeWalk app initialized successfully');
       
     } catch (error) {
       console.error('Failed to initialize CakeWalk app:', error);
-      // Make sure loading screen is hidden even if initialization fails
-      this.hideLoadingScreen();
+      this.forceHideLoadingScreen();
     }
   }
 
-  async loadDeviceStyles() {
+  // Detect device type synchronously to avoid flicker
+  detectDeviceType() {
     try {
-      const baseStyles = ['variables.css', 'base.css', 'optimized/responsive.css', 'modal.css'];
-      const deviceStyles = this.deviceType === 'mobile' 
-        ? ['mobile.css']
-        : ['desktop.css'];
-  
-      const allStyles = [...baseStyles, ...deviceStyles];
+      // Check for cached device type first
+      const cached = Utils.getCachedDeviceType();
+      if (cached) return cached;
       
-      // Add a timeout to prevent hanging forever
-      const loadWithTimeout = (href) => {
-        return Promise.race([
-          this.loadStylesheet(href),
-          new Promise((_, reject) => 
-            setTimeout(() => reject(new Error(`Stylesheet loading timed out: ${href}`)), 3000)
-          )
-        ]).catch(err => {
-          console.warn(err);
-          return Promise.resolve(); // Continue despite errors
-        });
-      };
-      
-      // Load styles in parallel
-      await Promise.all(allStyles.map(style => loadWithTimeout(`css/${style}`)));
-    } catch (error) {
-      console.warn('Error loading styles:', error);
-      // Continue despite errors
+      // Simple detection based on screen width
+      return (window.innerWidth < 768) ? 'mobile' : 'desktop';
+    } catch (e) {
+      console.warn('Error detecting device type:', e);
+      // Default to mobile as it's usually more compatible
+      return 'mobile';
     }
+  }
+
+  async loadCriticalCSS() {
+    // Load only the absolutely essential CSS first
+    const criticalStyles = ['variables.css', 'base.css'];
+    const deviceStyle = this.deviceType === 'mobile' ? 'mobile.css' : 'desktop.css';
+    criticalStyles.push(deviceStyle);
+    
+    // Load critical CSS with short timeout
+    return Promise.all(criticalStyles.map(style => 
+      this.loadStylesheetWithTimeout(`css/${style}`, 1000)
+    )).catch(err => {
+      console.warn('Some critical styles failed to load:', err);
+      // Continue anyway to ensure content becomes visible
+    });
+  }
+  
+  async loadRemainingStyles() {
+    // Load remaining styles after critical CSS
+    const remainingStyles = ['optimized/responsive.css', 'modal.css'];
+    
+    return Promise.all(remainingStyles.map(style => 
+      this.loadStylesheetWithTimeout(`css/${style}`, 2000)
+    )).catch(err => {
+      console.warn('Some non-critical styles failed to load:', err);
+      // Non-critical, so we can continue
+    });
+  }
+
+  loadStylesheetWithTimeout(href, timeout) {
+    return Promise.race([
+      this.loadStylesheet(href),
+      new Promise((_, reject) => 
+        setTimeout(() => reject(new Error(`Stylesheet loading timed out: ${href}`)), timeout)
+      )
+    ]).catch(err => {
+      console.warn(err);
+      return Promise.resolve(); // Continue despite errors
+    });
   }
 
   loadStylesheet(href) {
     return new Promise((resolve, reject) => {
+      // Check if already loaded
       if (document.querySelector(`link[href="${href}"]`)) {
         resolve();
         return;
@@ -93,84 +144,79 @@ class CakeWalkApp {
       const link = document.createElement('link');
       link.rel = 'stylesheet';
       link.href = href;
-      link.onload = resolve;
-      link.onerror = reject;
+      
+      link.onload = () => resolve();
+      link.onerror = () => reject(new Error(`Failed to load stylesheet: ${href}`));
       
       document.head.appendChild(link);
     });
   }
 
-  initializeComponents() {
+  async initializeComponentsAsync() {
     try {
-      // Navigation
-      const nav = new Navigation();
-      this.components.set('navigation', nav);
-    } catch (e) {
-      console.warn('Failed to initialize Navigation:', e);
-    }
-    
-    try {
-      // 3D Carousel
-      const productCarousel = Utils.$('#productCarousel');
-      if (productCarousel) {
-        const carousel = new Carousel3D(productCarousel);
-        this.components.set('carousel', carousel);
+      // Load components dynamically
+      const { Navigation, Carousel3D, Modal, FormHandler, ScrollManager } = await loadComponents();
+      
+      // Initialize each component with error handling
+      this.initializeComponent('navigation', () => new Navigation());
+      
+      // Initialize carousel if the component loaded successfully
+      if (Carousel3D) {
+        const productCarousel = document.getElementById('productCarousel');
+        if (productCarousel) {
+          this.initializeComponent('carousel', () => new Carousel3D(productCarousel));
+        }
+        
+        const desktopCarousel = document.getElementById('desktopProductCarousel');
+        if (desktopCarousel) {
+          this.initializeComponent('desktopCarousel', () => new Carousel3D(desktopCarousel));
+        }
       }
-    } catch (e) {
-      console.warn('Failed to initialize Carousel:', e);
-    }
-
-    try {
-      // Desktop Carousel
-      const desktopCarousel = Utils.$('#desktopProductCarousel');
-      if (desktopCarousel) {
-        const desktopCarouselComponent = new Carousel3D(desktopCarousel);
-        this.components.set('desktopCarousel', desktopCarouselComponent);
+      
+      // Initialize other components
+      if (Modal) {
+        this.initializeComponent('modal', () => new Modal('#productModal'));
       }
-    } catch (e) {
-      console.warn('Failed to initialize desktop Carousel:', e);
+      
+      if (FormHandler) {
+        this.initializeComponent('contactForm', () => new FormHandler('#contactForm'));
+      }
+      
+      if (ScrollManager) {
+        this.initializeComponent('scrollManager', () => new ScrollManager());
+      }
+      
+      // Safety mechanism to ensure content is visible
+      document.body.style.visibility = 'visible';
+      
+    } catch (error) {
+      console.error('Component initialization error:', error);
+      // Ensure content is visible despite errors
+      document.body.style.visibility = 'visible';
     }
-
+  }
+  
+  initializeComponent(name, factoryFn) {
     try {
-      // Modal
-      const modal = new Modal('#productModal');
-      this.components.set('modal', modal);
-    } catch (e) {
-      console.warn('Failed to initialize Modal:', e);
+      this.components.set(name, factoryFn());
+    } catch (error) {
+      console.warn(`Failed to initialize ${name}:`, error);
     }
-
-    try {
-      // Form validation
-      const contactForm = new FormHandler('#contactForm');
-      this.components.set('contactForm', contactForm);
-    } catch (e) {
-      console.warn('Failed to initialize Form handler:', e);
-    }
-    
-    try {
-      // Scroll functionality
-      const scrollManager = new ScrollManager();
-      this.components.set('scrollManager', scrollManager);
-    } catch (e) {
-      console.warn('Failed to initialize ScrollManager:', e);
-    }
-
-    // Performance monitoring
-    this.setupPerformanceMonitoring();
   }
   
   setupProductInteractions() {
     try {
+      // Get modal if available
+      const modal = this.components.get('modal');
+      if (!modal) return;
+      
       // Handle product item clicks
-      const productItems = Utils.$$('.product-item, .desktop-product-item');
+      const productItems = document.querySelectorAll('.product-item, .desktop-product-item');
       productItems.forEach(item => {
         item.addEventListener('click', () => {
-          const modal = this.components.get('modal');
-          if (!modal) return;
-          
           const productName = item.dataset.product;
-          const productCategory = item.dataset.category;
-          const productImage = item.querySelector('img').src;
+          const productImage = item.querySelector('img')?.src;
+          if (!productName || !productImage) return;
           
           // Product descriptions mapping
           const descriptions = {
@@ -195,66 +241,57 @@ class CakeWalkApp {
     }
   }
   
-  hideLoadingScreen() {
-    try {
-      // Clear the timeout to avoid double execution
-      if (this.loadingTimeout) {
-        clearTimeout(this.loadingTimeout);
-        this.loadingTimeout = null;
-      }
-      
-      const loadingScreen = Utils.$('#loading-screen');
-      if (loadingScreen) {
-        Utils.addClass(loadingScreen, 'hidden');
-        
-        // Remove from DOM after transition completes
-        setTimeout(() => {
-          if (loadingScreen.parentNode) {
-            loadingScreen.parentNode.removeChild(loadingScreen);
-          }
-        }, 1000);
-      }
-    } catch (e) {
-      // Fallback if Utils or other functions fail
-      const loadingScreen = document.getElementById('loading-screen');
-      if (loadingScreen) {
-        loadingScreen.style.display = 'none';
-      }
+  startHidingLoadingScreen() {
+    // Begin the fade-out process for the loading screen
+    const loadingScreen = document.getElementById('loading-screen');
+    if (loadingScreen) {
+      loadingScreen.classList.add('hidden');
     }
   }
-
-  setupPerformanceMonitoring() {
-    try {
-      // Monitor Core Web Vitals
-      if ('web-vital' in window) {
-        import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
-          getCLS(console.log);
-          getFID(console.log);
-          getFCP(console.log);
-          getLCP(console.log);
-          getTTFB(console.log);
-        }).catch(e => console.warn('Web vitals failed to load:', e));
-      }
-
-      // Monitor long tasks
-      if ('PerformanceObserver' in window) {
-        const observer = new PerformanceObserver((list) => {
-          list.getEntries().forEach((entry) => {
-            if (entry.duration > 50) {
-              console.warn('Long task detected:', entry);
-            }
-          });
-        });
-        observer.observe({ entryTypes: ['longtask'] });
-      }
-    } catch (e) {
-      console.warn('Failed to setup performance monitoring:', e);
+  
+  completeLoading() {
+    this.forceHideLoadingScreen();
+    
+    // Ensure any pending timers are cleared
+    if (this.loadingTimeout) {
+      clearTimeout(this.loadingTimeout);
+      this.loadingTimeout = null;
     }
+    
+    if (this.showContentTimeout) {
+      clearTimeout(this.showContentTimeout);
+      this.showContentTimeout = null;
+    }
+  }
+  
+  forceHideLoadingScreen() {
+    const loadingScreen = document.getElementById('loading-screen');
+    if (loadingScreen) {
+      // First try the class-based animation
+      loadingScreen.classList.add('hidden');
+      
+      // Then force hide it with inline style after a short delay
+      setTimeout(() => {
+        if (loadingScreen.parentNode) {
+          loadingScreen.style.display = 'none';
+          
+          // After transition completes, remove from DOM
+          setTimeout(() => {
+            if (loadingScreen.parentNode) {
+              loadingScreen.parentNode.removeChild(loadingScreen);
+            }
+          }, 1000);
+        }
+      }, 300);
+    }
+    
+    // Make sure body content is visible
+    document.body.style.visibility = 'visible';
   }
 
   destroy() {
     this.components.forEach(component => {
-      if (component && component.destroy) {
+      if (component && typeof component.destroy === 'function') {
         try {
           component.destroy();
         } catch (e) {
@@ -267,16 +304,19 @@ class CakeWalkApp {
   }
 }
 
-// Initialize app
+// Initialize app with error boundary
 try {
   const app = new CakeWalkApp();
-  app.init();
+  window.addEventListener('DOMContentLoaded', () => app.init());
 
   // Global reference for debugging
   window.CakeWalkApp = app;
 } catch (e) {
   console.error('Fatal error initializing CakeWalkApp:', e);
-  // Ensure loading screen is removed
+  // Ensure content is visible despite fatal errors
+  document.body.style.visibility = 'visible';
+  
+  // Remove loading screen
   const loadingScreen = document.getElementById('loading-screen');
   if (loadingScreen) {
     loadingScreen.style.display = 'none';

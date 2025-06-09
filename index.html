@@ -583,15 +583,26 @@
             });
         }
     </script>
-	<script>
-  // Fallback to ensure loading screen is removed
+<!-- Add these lines right after the opening <body> tag in index.html -->
+<style>
+  /* Failsafe CSS to ensure content visibility */
+  body {
+    visibility: visible !important;
+  }
+  .loading-screen.force-hidden {
+    display: none !important;
+  }
+</style>
+<script>
+  // Failsafe loader to ensure content becomes visible
   window.addEventListener('load', function() {
     setTimeout(function() {
+      document.body.style.visibility = 'visible';
       const loadingScreen = document.getElementById('loading-screen');
       if (loadingScreen) {
-        loadingScreen.style.display = 'none';
+        loadingScreen.classList.add('force-hidden');
       }
-    }, 2000); // 2 seconds timeout
+    }, 3000);
   });
 </script>
 </body>
